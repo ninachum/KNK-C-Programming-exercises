@@ -1,0 +1,113 @@
+(1)
+7 * 8 + 7 * 1 = 63
+7 * 16 + 7 * 1 = 119
+10 * 16^2 + 11 * 16 + 12 * 1 = 2748
+
+(2)
+legal
+legal
+not - 9 cannot show in octal expression
+not - _000 no underscore in constants
+legal
+
+(3)
+legal
+not
+legal
+legal
+
+(4)
+d is illegal (printf requires char* // that is, a string. )
+
+(5)
+0b1000001
+
+b looks like binary expression, but is not supported in C.
+
+However, GCC does support them as an extension, so this will successfully
+compile and work fine _only_ when compiled with GCC.
+
+(6)
+char
+short
+short
+int
+
+(7)
+\10
+\12
+\15
+\11
+
+(8)
+\x08
+\x0a
+\x0d
+\x09
+
+(9)
+int
+
+(10)
+unsigned int
+
+(11)
+double
+
+(12)
+int i is converted to float, then i + f is done.
+And, float (i + f) is converted to double. 
+finally, double (i + f) is assigned to d.
+
+(13)
+int -3
+long 7
+float 6.5
+double 3.75
+double -1
+int 6
+
+(14)
+if the value stored in f exceeds the largest value of type int, converting will fail.
+
+/* written down below is based on one of three definition of fractional part for negative number.
+ * https://en.wikipedia.org/wiki/Fractional_part
+ */
+when f is less than zero, its fractional part will be evaluated as - (1 - true_fractional_part),
+which is equal to true_fractioanl_part - 1.
+
+ex) fractional part of -0.4 is 0.6.
+	(-0.4 = -1 + 0.6)
+    if f is -0.4, frac_part will be -0.4, which is 0.6 - 1.
+
+(15)
+#include <stdio.h>
+#include <stdint.h>
+
+int main(void)
+{
+	typedef int8_t int8;
+	typedef int16_t int16;
+	typedef int32_t int32;
+
+	return 0;
+}
+
+OR...............................
+
+
+/* based on 64-bit machine */
+
+#include <stdio.h>
+
+int main(void)
+{
+	typedef signed char Int8;
+	/* do not assume char will be signed or unsigned by default. use signed or unsigned char explicitly. */
+	typedef short Int16;
+	typedef int Int32;
+
+	return 0;
+}
+
+

@@ -1,0 +1,153 @@
+#include <stdio.h>
+
+int main(void)
+{
+	int input_1, input_2;
+	
+	printf("Enter a three-digit number: ");
+	scanf("%d", &input_1);
+	input_2 = input_1 % 100;
+
+	printf("The reversal is: %d%d%d\n", input_2 % 10, input_2 / 10, input_1 / 100);
+
+	return 0;
+}
+
+#include <stdio.h>
+
+int main(void)
+{
+	int input, n1, n2, n3;
+	
+	printf("Enter a three-digit number: ");
+	scanf("%d", &input);
+
+	n1 = input / 100;
+	n2 = input / 10 % 10;
+	n3 = input % 10;
+
+
+	printf("The reversal is: %d%d%d\n", n3, n2, n1);
+
+	return 0;
+}
+
+#include <stdio.h>
+
+int main(void)
+{
+	int i, j, k;
+	
+	printf("Enter a three-digit number: ");
+	scanf("%1d%1d%1d", &i, &j, &k);
+
+	printf("The reversal is: %d%d%d\n", k, j, i);
+
+	return 0;
+}
+
+#include <stdio.h>
+
+int main(void)
+{
+	int input, o1=0, o2=0, o3=0, o4=0, o5=0;
+
+	printf("Enter a number between 0 and 32767: ");
+	scanf("%d", &input);
+
+	o1 = input % 8;
+	o2 = (input / 8) % 8;
+	o3 = (input / 64) % 8;
+	o4 = (input / 512) % 8;
+	o5 = (input / 4096) % 8;
+
+	printf("In octal, your number is: %d%d%d%d%d\n", o5, o4, o3, o2, o1);
+
+	return 0;
+}
+
+#include <stdio.h>
+
+int main(void)
+{
+	int input, o1=0, o2=0, o3=0, o4=0, o5=0;
+
+	printf("Enter a number between 0 and 32767: ");
+	scanf("%d", &input);
+
+	o1 = input % 8;
+	input /= 8;
+	o2 = input % 8;
+	input /= 8;
+	o3 = input % 8;
+	input /= 8;
+	o4 = input % 8;
+	input /= 8;
+	o5 = input % 8;
+	input /= 8;
+
+	printf("In octal, your number is: %d%d%d%d%d\n", o5, o4, o3, o2, o1);
+
+	return 0;
+}
+#include <stdio.h>
+
+int main(void)
+{
+	int d, i1, i2, i3, i4, i5, j1, j2, j3, j4, j5,
+		first_sum, second_sum, total;
+
+	printf("Enter the first (single) digit: ");
+	scanf("%d", &d);
+	printf("Enter first group of five digits: ");
+	scanf("%1d%1d%1d%1d%1d", &i1, &i2, &i3, &i4, &i5);
+	printf("Enter second group of five digits: ");
+	scanf("%1d%1d%1d%1d%1d", &j1, &j2, &j3, &j4, &j5);
+
+	first_sum = d + i2 + i4 + j1 + j3 + j5;
+	second_sum = i1 + i3 + i5 + j2 + j4;
+	total = 3 * first_sum + second_sum;
+
+	printf("Check digit: %d\n", 9 - ((total - 1) % 10));
+
+	return 0;
+}
+
+#include <stdio.h>
+
+int main(void)
+{
+	int d, i1, i2, i3, i4, i5, j1, j2, j3, j4, j5,
+		first_sum, second_sum, total;
+
+	printf("Enter first eleven digits: ");
+	scanf("%1d%1d%1d%1d%1d%1d%1d%1d%1d%1d%1d", &d, &i1, &i2, &i3, &i4, &i5, &j1, &j2, &j3, &j4, &j5);
+
+	first_sum = d + i2 + i4 + j1 + j3 + j5;
+	second_sum = i1 + i3 + i5 + j2 + j4;
+	total = 3 * first_sum + second_sum;
+
+	printf("Check digit: %d\n", 9 - ((total - 1) % 10));
+
+	return 0;
+}
+
+#include <stdio.h>
+
+int main(void)
+{
+	int d, i1, i2, i3, i4, i5, j1, j2, j3, j4, j5, j6,
+		first_sum, second_sum, total;
+
+	printf("Enter first twelve digits of an EAN: ");
+	scanf("%1d%1d%1d%1d%1d%1d%1d%1d%1d%1d%1d%1d", &d, &i1, &i2, &i3, &i4, &i5, &j1, &j2, &j3, &j4, &j5, &j6);
+
+	first_sum = i1 + i3 + i5 + j2 + j4 + j6;
+	second_sum = d + i2 + i4 + j1 + j3 + j5;
+	total = 3 * first_sum + second_sum;
+
+	printf("Check digit: %d\n", 9 - ((total - 1) % 10));
+
+	return 0;
+}
+

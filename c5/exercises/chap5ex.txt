@@ -1,0 +1,62 @@
+1
+1
+1
+0
+
+1
+1
+1
+1
+
+1
+3 4(or 5 - undefined behavior: result will differ due to fetch order.) 5
+0
+7 8 9
+1
+8 8 9
+1
+2 2 2
+
+(i == j ? 0 : (i > j ? 1 : -1))
+OR...
+(i > j) - (i < j)
+
+legal, but not useful.
+n==0
+n >= 1 <= 10
+==============
+0 <= 10
+==============
+1
+==============
+result: n is between 0 and 10
+
+legal, but not useful.
+nothing will happen(condition of the if statement is false)
+
+17) 17
+-17) -17
+
+if (13 <= age && age <= 19)
+	teenager = true;
+else
+	teenager = false;
+OR...
+13 <= age && age <= 19 ? teenager = true : teenager false;
+equivalent
+
+onetwo
+
+switch(area_code){
+case 229: printf("Albany"); break;
+case 404:
+case 470:
+case 678:
+case 770: printf("Atlanta"); break;
+case 478: printf("Macon"); break;
+case 706:
+case 762: printf("Columbus"); break;
+case 912: printf("Savannah"); break;
+default: printf("Area code not recognized"); break;
+
+
