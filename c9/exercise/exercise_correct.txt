@@ -1,0 +1,370 @@
+1.
+
+double triangle_area(double base, height)
+double product;
+{
+	product = base * height;
+	return product / 2;
+}
+
+==>>
+
+double triangle_area(double base, double height)
+{
+	double product;
+	product = base * height;
+	return product / 2;
+}
+
+2.
+
+int check(int x, int y, int n)
+{
+	if (((0 <= x) && (x <= (n - 1))) && ((0 <= y) && (y <= (n - 1))))
+		return 0;
+	return 1;
+}
+
+3.
+
+int gcd(int x, int y)
+{
+	int temp;
+
+	while (y != 0) {
+		temp = x % y;
+		x = y;
+		y = temp;
+	}
+
+	return x;
+}
+
+4.
+
+int day_of_year(int month, int day, int year)
+{
+	int day_of_year = 0;
+
+	while (month > 0) {
+		switch (month) {
+		case 1: case 3: case 5: case 7: case 8: case 10: case 12:
+			day_of_year += 31;
+			break;
+		case 2:
+			if (((float)year % 4 == 0 || (float)year % 400 == 0) && (float)year % 100 != 0)
+				day_of_year += 29;
+			else
+				day_of_year += 28;
+			break;
+		case 4: case 6: case 9: case 11:
+			day_of_year += 30;
+			break;
+		}
+		month--;
+	}
+
+	day_of_year += day;
+
+	return day_of_year;
+}
+
+5.
+
+int num_digits(int n)
+{
+	int divtime = 0;
+
+	do
+	{
+		n = n / 10;
+		divtime++;
+	} while (n > 0);
+
+	return divtime;
+}
+
+6.
+
+int digit(int n, int k)
+{
+	int i, temp;
+
+	for (i = 0; i < k; i++) {
+		temp = n % 10;
+		n = n / 10;
+	}
+	return temp;
+}
+
+7.
+
+a - legal
+b - legal, return value is converted to double
+c - legal, fractional part will be discarded.
+d - legal, fractional part will be discarded, and return value is converted to double
+e - legal, but no effect
+
+
+8.
+
+a, b;
+return type of (d) is default type (int).
+
+9.
+
+i = 1, j = 2;
+
+
+10.
+
+int ten_first(int arr[], int n)
+{
+	int largest = arr[0], i;
+
+	for (i = 1; i < n; i++) {
+		if (largest < arr[i])
+			largest = arr[i];
+	}
+
+	return largest;
+}
+
+
+double ten_second(int arr[], int n)
+{
+	double average = 0;
+	int i;
+
+	for (i = 0; i < n; i++) {
+		average += arr[i];
+	}
+	average /= n;
+
+	return average;
+}
+
+
+int ten_third(int arr[], int n)
+{
+	int counter = 0, i;
+
+	for (i = 0; i < n; i++) {
+		if (arr[i] > 0)
+			counter++;
+	}
+
+	return counter;
+}
+
+
+11.
+
+float compute_GPA(char grades[], int n)
+{
+	double average = 0;
+	int i;
+
+	for (i = 0; i < n; i++) {
+		switch (toupper(grades[i])) {
+		case 'A':
+			average += 4;
+			break;
+		case 'B':
+			average += 3;
+			break;
+		case 'C':
+			average += 2;
+			break;
+		case 'D':
+			average += 1;
+			break;
+		default:
+			break;
+		}
+	}
+	average /= n;
+
+	return average;
+}
+
+
+12.
+
+double inner_product(double a[], double b[], int n);
+{
+	int i;
+	double sum = 0;
+
+	for (i = 0; i < n; i++) {
+		sum += a[i] * b[i];
+	}
+
+	return sum;
+}
+
+
+13.
+
+int evaluate_position(char board[8][8])
+{
+	int i, j;
+	int white = 0, black = 0;
+
+	for (i = 0; i < 8; i++) {
+		for (j = 0; j < 8; j++) {
+			switch (board[i][j]) {
+			case 'Q':
+				white += 9;
+				break;
+			case 'R':
+				white += 5;
+				break;
+			case 'B':
+				white += 3;
+				break;
+			case 'N':
+				white += 3;
+				break;
+			case 'P':
+				white += 1;
+				break;
+			case 'q':
+				black += 9;
+				break;
+			case 'r':
+				black += 5;
+				break;
+			case 'b':
+				black += 3;
+				break;
+			case 'n':
+				black += 3;
+				break;
+			case 'p':
+				black += 1;
+				break;
+			default:
+				printf("\nThere's an exception.\n");
+				break;
+			}
+		}
+	}
+
+	return white - black;
+}
+
+
+14.
+
+bool has_zero(int a[], int n)
+{
+	int i;
+
+	for (i = 0; i < n; i++) {
+		if (a[i] == 0)
+			return true;
+	}
+
+	return false;
+}
+
+
+15.
+
+double median(double x, double y, double z)
+{
+	double median;
+
+	for (;;) {
+		if (x <= y) {
+			if (y <= z) {
+				median = y;
+				break;
+			}
+			else if (x <= z) {
+				median = z;
+				break;
+			}
+			else {
+				median = x;
+				break;
+			}
+		}
+		if (z <= y) {
+			median = y;
+			break;
+		}
+		if (x <= z) {
+			median = x;
+			break;
+		}
+		median = z;
+		break;
+	}
+	
+	return median;
+}
+
+
+16.
+
+int fact(int n)
+{
+	return (n <= 1) ? 1 : n * fact(n - 1);
+}
+
+
+17.
+
+int fact(int n)
+{
+	int result = 1;
+
+	while (n > 1) {
+		result *= n;
+		n--;
+	}
+
+	return result;
+}
+
+
+18.
+
+int gcd(int x, int y)
+{
+	if (y == 0)
+		return x;
+	else {
+		return gcd(y, x % y);
+	}
+}
+
+
+19.
+
+void pb(int n)
+{
+	if (n != 0) {
+		pb(n / 2);
+		putchar('0' + n % 2);
+	}
+}
+
+/*
+
+ex) 100 input
+
+pb(100) => calls pb(50), putchar(0)
+pb(50) => calls pb(25), putchar(0)
+pb(25) => calls pb(12), putchar(1)
+pb(12) => calls pb(6), putchar(0)
+pb(6) => calls pb(3), putchar(0)
+pb(3) => calls pb(1), putchar(1)
+pb(1) => calls pb(0), putchar(1)
+pb(0) => nothing;
+
+It prints binary conversion of integer n.
+*/
+

@@ -1,0 +1,26 @@
+1.
+
+in f : int a, int b, int c
+
+in g : int a, int d   **
+
+in block in which e is declared : int a, int d, int e    **
+
+in main : int a, int f
+
+
+2.
+
+in f : int b(in f), int c, int d
+
+in g : int a, int b, int c(in g)
+
+in block in which a and d are declared : int a(in block), int b, int c(in g), int d
+
+in main : int b, int c(in main) int d
+
+
+3.**
+
+two + X. (1 in external variable, 1 in main function    +     1 in each block / nested block)
+
