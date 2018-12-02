@@ -1,0 +1,144 @@
+1.
+storage class  /  type qualifiers  /  type specifiers  /  declarators  /  initializers
+
+static				none			char 				**lookup(int level)		none
+auto				volatile		unsigned long			io_flags			none
+extern				none			char 				*file_[MAX_FILES]		none
+															path[]
+static				const			char				token_buf[]				""
+
+2.
+
+(a) extern
+(b) static
+(c) extern, static
+
+3.
+
+storage duration  /  scope  /  linkage
+	static			 file		external linkage
+	automatic		 block		no linkage
+	static			 block		no linkage
+	automatic		 block		no linkage
+
+
+4.
+
+				return value of j
+first call				0
+second call				1
+third call				2
+fourth call				3
+fifth call				4
+sixth call				5
+0, 50
+
+5.
+
+(a)false, a static or extern variable in a function isn't.
+(b)false, a extern variable in a function isn't. (when it is defined in another file.)
+(c)true, a static variable declared outside any block is.
+(d)true, functions are called by value(copied one)
+
+6.
+
+void print_error(const char *message)
+{
+	static int n = 1;
+	printf("Error %d: %s\n", n++, message);
+}
+
+7.
+
+(a)no, case label of switch statement must be a constant expression, in which there's no variable.
+(b)yes
+(c)yes
+(d)yes
+
+8.
+
+(a)
+1. an 10-length array of
+2. pointers to
+3. functions with int argument
+4. returning char
+
+(b)
+1. a function with int argument
+2. returing a pointer to 
+3. an int array with 5-length
+
+(c)
+1. a function with void argument
+2. returning pointer to 
+3. a function with int argument
+4. returning pointer to a float value.
+
+(d)
+1. a function with its arguments as: an integer, and a pointer to a function with int argument returning nothing.
+2. returning pointer to
+3. a function with int argument, returning nothing.
+
+9.
+
+(a)
+char (*x[10])(int);
+typedef char Fcn(int);
+typedef Fcn *Fcn_ptr;
+typedef Fcn_ptr Fcn_ptr_array[10];
+Fcn_ptr_array x;
+
+int (*x(int))[5];
+typedef int Arr[5];
+typedef Arr *Arr_func_ptr(int);
+Arr_func_ptr x;
+
+float *(*x(void))(int);
+typedef float *Fcn(int);
+typedef Fcn *Fcn_fcn(void);
+Fcn_fcn x;
+
+void (*x(int, void (*y)(int)))(int);
+typedef void Fcn(int);
+typedef void (*Fcn_arg)(int);
+typedef Fcn *Fcn_ptr(int, Fcn_arg);
+Fcn_ptr x;
+
+
+10.
+
+(a) char *(*p)(char *)
+(b) void (*f(struct t *p, long n))(void)
+(c) void (*a[4])(void) = {insert, search, update, print};
+(d) struct t (*b[10])(int, int)
+
+11.
+
+int *f(int);
+int (*g(int))(int);
+int (*a[10])(int);
+
+12.
+
+(a)
+1. f is a function with aruguments as : a pointer to a function with long argument returning float, and char *.
+2. returning pointer to a function with double argument, returning int.
+
+(b)
+int n = (f(function_pointer, char_pointer))(d);
+we can use this function when we need two sequential function calls.
+
+13.
+
+(a) legal
+(b) illegal - an initializer for a variable with static storage duration must be constant. (471p)
+(c) legal
+(d) legal
+
+14.
+
+e
+
+15.
+
+(a) - static : initialized with meaningful zeroes. (0 for integer, 0.0 for float...)

@@ -1,0 +1,363 @@
+1.
+#include <stdlib.h>
+
+void *my_malloc(size_t size)
+{
+	void *p = malloc(size);
+
+	if (p != NULL)
+		return p;
+	else {
+		printf("No memory available.\n");
+		exit(EXIT_FAILURE);
+	}
+}
+
+2.
+#include <stdlib.h>
+#include <string.h>
+
+char *duplicate(char *source)
+{
+	char *p = malloc(strlen(source) + 1);
+
+	if (p != NULL) {
+		strcpy(p, source);
+		return p;
+	}
+	else {
+		printf("No available memory.\n");
+		return NULL;
+	}
+
+}
+
+3.
+#include <stdlib.h>
+#include <stdio.h>
+
+int *create_array(int n, int initial_value)
+{
+	int i;
+	int *p = malloc(sizeof(int) * n);
+
+	if (p != NULL) {
+		for (i = 0; i < n; i++)
+			p[i] = initial_value;
+		return p;
+	}
+	else {
+		printf("No available memory.\n");
+		return NULL;
+	}
+}
+	
+4.
+#include <stdlib.h>
+
+struct point {
+	int x, y;
+};
+
+struct rectangle {
+	struct point upper_left, lower_right;
+};
+
+int main(void)
+{
+	struct rectangle *p = malloc(sizeof(struct rectangle));
+
+	p->upper_left.x = 10;
+	p->upper_left.y = 25;
+	p->lower_right.x = 20;
+	p->lower_right.y = 15;
+
+}
+
+5.
+(a) illegal, corrected to: p->d.b = ' ';
+(b) legal
+(c) legal
+(d) illegal, corrected to: p->d.c = 20; (since d isn't a pointer)
+
+6.
+#include <stdlib.h>
+
+struct node {
+	int number;
+	struct node *next;
+};
+
+/* original one */
+struct node *delete_from_list(struct node *list, int n)
+{
+	struct node *cur, *prev;
+
+	for (cur = list, prev = NULL;
+	 	 cur != NULL && cur->value != n;
+		 prev = cur, cur = cur->next)
+	;
+
+	if (cur == NULL)
+		return list;
+	if (prev == NULL)
+		list = list->next;
+	else
+		prev->next = cur->next;
+	free(cur);
+	return list;
+}
+
+/* modified one */
+/* a struct node pointer increses by 1, checking its next structure's 'number' value. */
+struct node *delete_from_list_2(struct node *list, int n)
+{
+	struct node *p = list;
+
+	/* if a node to be deleted is the first one */
+	if (p->number == n) {
+		list = list->next;
+		free(p);
+		return list;
+	}
+
+	/* if it isn't the first one, begin search. */
+	for (; p->next != NULL && p->next->number != n; p = p->next)
+		;
+	/* mostly, p is a node that precedes a node which is its 'number'value is n. */
+
+	/* if there is no such node.. */
+	if (p->next == NULL)
+		return list;
+
+	/* if there is a node we're looking for... */
+	else {
+		list = p->next->next; /* this time, list works as temporary storage. */
+		free(p->next);
+		p->next = list;
+		return list;
+	}	
+
+}
+
+7.
+#include <stdlib.h>
+
+int main(void)
+{
+	/* WRONG, a space that p is pointing is freed before pointer p moves to next one. as result, only initial node will be freed. */
+	for (p = first; p != NULL; p = p->next)
+		free(p);
+
+	/* trailing pointer technique and an additional free() will do. */
+	for (prev = first, cur = first->next; cur != NULL; prev = cur, cur = cur->next)
+		free(prev);
+	free(prev);
+
+}
+
+8.
+see stack folder.
+
+9.
+True.
+(&x)->a means member 'a' in a structure x, pointed by &x.
+
+10.
+#include <stdio.h>
+#include <stdlib.h>
+
+/* original one */
+void print_part(struct part p)
+{
+	printf("Part number: %d\n", p.number);
+	printf("Part name: %s\n", p.name);
+	printf("Quantity on hand: %d\n", p.on_hand);
+}
+
+/* modified one */
+void print_part_2(struct part *p)
+{
+	printf("Part number: %d\n", p->number);
+	printf("Part name: %s\n", p->name);
+	printf("Quantity on hand: %d\n", p->on_hand);
+}
+
+
+11.
+#include <stdlib.h>
+
+int count_occurrences(struct node *list, int n)
+{
+	int counter = 0;
+
+	for (; list != NULL; list = list->next)
+		if (list->number == n)
+			counter++;
+
+	return counter;
+}
+
+12.
+#include <stdlib.h>
+
+struct node *find_last(struct node *list, int n)
+{
+	struct node *last_appear = NULL;
+
+	for (; list != NULL; list = list->next)
+		if (list->number == n)
+			last_appear = list;
+
+	return last_appear;
+}
+
+13.
+#include <stdlib.h>
+
+struct node *insert_into_ordered_list(struct node *list, struct node *new_node)
+{
+	struct node *cur = list, *prev = NULL;
+
+	/* if list is empty */
+	if (list == NULL) {
+		return new_node;
+	}
+
+	/* if it isn't empty, do search for new_node's seat. */
+	while ((cur->value < new_node->value) && (cur != NULL)) {
+		prev = cur;
+		cur = cur->next;
+	}
+
+	/* if there is a same number in the list. */
+	if (cur->value == new_node->value) {
+		printf("value already exists.\n");
+		free(new_node);
+		return list;
+	}
+
+	/* if node is inserted in the tail. */
+	if (cur == NULL) {
+		prev->next = new_node;
+		new_node->next = NULL;
+		return list;
+	}
+
+	/* if node is inserted in the head. */
+	if (prev == NULL) {
+		new_node->next = list;
+		return new_node;
+	}
+
+	/* if node is in the middle of the list. */
+	else {
+		prev->next = new_node;
+		new_node->next = cur;
+		return list;
+	}
+}
+
+14.
+#include <stdlib.h>
+
+/* origianl one */
+struct node *delete_from_list(struct node *list, int n)
+{
+	struct node *cur, *prev;
+
+	for (cur = list, prev = NULL;
+		cur != NULL && cur->value != n;
+		prev = cur, cur = cur->next)
+		;
+
+	if (cur == NULL)
+		return list;
+	if (prev == NULL)
+		list = list->next;
+	else
+		prev->next = cur->next;
+	free(cur);
+	return list;
+}
+
+/* modified one */
+void *delete_from_list_2(struct node **list, int n)
+{
+	struct node *cur, *prev;
+
+	for (cur = list, prev = NULL;
+		cur != NULL && cur->value != n;
+		prev = cur, cur = cur->next)
+		;
+
+	if (cur == NULL)
+		return;
+	if (prev == NULL)
+		*list = cur->next;
+	else
+		prev->next = cur->next;
+	free(cur);
+
+}
+
+
+15.
+Answer: 3
+
+16.
+int sum(int (*f)(int), int start, int end)
+{
+	int result = 0;
+
+	for (; start <= end; start++)
+		result += (*f)(start);
+
+	return result;
+}
+
+
+17.
+#include <stdlib.h>
+
+int a[100];
+
+qsort(&a[50], 50, sizeof(a[0]), compar);
+
+
+18.
+int compare_parts(const void *p, const void *q)
+{
+	return ((struct part*) q)->number - ((struct part *) p)->number;
+}
+
+19.
+#include <string.h>
+#inlcude <stdbool.h>
+
+struct {
+	char *cmd_name;
+	void(*cmd_pointer)(void);
+} file_cmd[] = {
+	{"new",		new_cmd},
+	{"open",	open_cmd},
+	{"close",	close_cmd},
+	{"close all", close_all_cmd},
+	{"save",	save_cmd},
+	{"save as", save_as_cmd},
+	{"save all", save_all_cmd},
+	{"printf", print_cmd},
+	{"exit", exit_cmd}
+};
+
+bool find_and_execute_cmd(char *str)
+{
+	int i;
+
+	for (i = 0; i < (sizeof(file_cmd) / sizeof(file_cmd[0])); i++)
+		if (strcmp(file_cmd[i].cmd_name, str) == 0) {
+			file_cmd[i].cmd_pointer();
+			return true;
+		}
+	return false;
+}

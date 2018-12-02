@@ -1,0 +1,460 @@
+1.
+
+(a)
+i = 8
+j = 9
+i >> 1 + j >> 1 
+i >> 10 >> 1 
+0 >> 1
+0 (in visual studio 2017)
+
+(b)
+0
+
+(c)
+i = 2 /* 0000 0000 0000 0010 */
+j = 1 /* 0000 0000 0000 0001 */
+k = 0 /* 0000 0000 0000 0000 */
+~i & j ^ k
+
+~i is 1111 1111 1111 1101
+j is 0000 0000 0000 0001
+~i & j is 0000 0000 0000 0001
+
+~i & j ^ k is 0000 0000 0000 0000
+which is 0.
+
+(d)
+i = 7 /* 0000 0000 0000 0111 */
+j = 8 /* 0000 0000 0000 1000 */
+k = 9 /* 0000 0000 0000 1001 */
+
+j & k is 0000 0000 0000 1000
+i ^ j & k is 0000 0000 0000 1111, which is 15.
+
+2.
+ 
+VERSION 1
+i = 0000 0000 0001 1111
+i = (i & 0x0010) ? (i & ~(1 << 4)) : (i | 1 << 4);
+/* if 4th bit is set, clear its bit. if not, set its bit. */
+
+VERSION 2 (MUCH BETTER)
+i ^= 1 << 4;
+/* using XOR, concise experssion is possible. */
+
+3.
+
+#define M(x,y) ((x)^=(y), (y)^=(x), (x)^=(y))
+
+x = 0000 1010 0101 1111
+y = 1111 1001 1010 1011
+
+x = 1111 0011 1111 0100
+
+y = 0000 1010 0101 1111
+
+x = 1111 1001 1010 1011
+
+swaps x and y.
+
+4.
+
+#define MK_COLOR(r, g, b) ((long) (((b) << 16) | ((g) << 8) | (r)))
+
+5.
+
+#include <stdio.h>
+#define MK_COLOR(r, g, b) ((unsigned long) (((b) << 16) + ((g) << 8) + (r)))
+#define GET_RED(r) ((unsigned char) ((0 <= (r)) ? (((r) <= 255) ? (r) : 255) : 0));
+#define GET_GREEN(g) ((unsigned char) ((0 <= (g)) ? (((g) <= 255) ? (g) : 255) : 0));
+#define GET_BLUE(b) ((unsigned char) ((0 <= (b)) ? (((b) <= 255) ? (b) : 255) : 0));
+
+int main(void)
+{
+	unsigned char RED = GET_RED(-200);
+	unsigned char GREEN = GET_GREEN(25);
+	unsigned char BLUE = GET_BLUE(200);
+
+	unsigned long color_example = MK_COLOR(RED, GREEN, BLUE);
+
+	printf("%lx\n", color_example);
+}
+
+6.
+
+(a)
+#include <stdio.h>
+
+unsigned short swap_bytes(unsigned short i);
+
+int main(void)
+{
+	unsigned short num;
+
+	printf("Enter a hexadecimal number (up to four digits): ");
+	scanf("%hx", &num);
+
+
+	printf("Number with bytes swapped: %hx\n", swap_bytes(num));
+
+	return 0;
+}
+
+unsigned short swap_bytes(unsigned short i)
+{
+	unsigned short temp;
+	temp = i << 8;
+	i >>= 8;
+	
+	return i | temp;
+}
+
+
+(b)
+#include <stdio.h>
+
+unsigned short swap_bytes(unsigned short i);
+
+int main(void)
+{
+	unsigned short num;
+
+	printf("Enter a hexadecimal number (up to four digits): ");
+	scanf("%hx", &num);
+
+
+	printf("Number with bytes swapped: %hx\n", swap_bytes(num));
+
+	return 0;
+}
+
+unsigned short swap_bytes(unsigned short i)
+{
+	return ((i << 8) | (i >> 8));
+}
+
+
+7.
+
+#include <stdio.h>
+
+unsigned int rotate_left(unsigned int i, int n);
+unsigned int rotate_right(unsigned int i, int n);
+
+int main(void)
+{
+	unsigned int sample1 = 0x12345678, sample2 = 0x01234567;
+	int rotates;
+
+	printf("Rotate time? : ");
+	scanf("%d", &rotates);
+
+	printf("1. %x\n2. %x\n", rotate_left(sample1, rotates), rotate_right(sample2, rotates));
+
+
+	return 0;
+}
+
+unsigned int rotate_left(unsigned int i, int n)
+{
+	return (i << n) | (i >> (sizeof(unsigned int) * 8 - n));
+}
+
+
+unsigned int rotate_right(unsigned int i, int n)
+{
+	return (i >> n) | (i << (sizeof(unsigned int) * 8 - n));
+}
+
+
+/** (not efficient version)
+unsigned int rotate_left(unsigned int i, int n)
+{
+	for (; n > 0; n--) {
+		if (i & 0x80000000) {
+			i <<= 1;
+			i++;
+		}
+		else
+			i <<= 1;
+	}
+	return i;
+}
+		
+
+unsigned int rotate_right(unsigned int i, int n)
+{
+	for (; n > 0; n--) {
+		if (i & 0x00000001) {
+			i >>= 1;
+			i |= 0x80000000;
+		}
+		else
+			i >>= 1;
+	}
+	return i;
+}
+**/
+
+8.
+(a)
+
+unsigned int f(unsigned int i, int m, int n)
+{
+	return (i >> (m + 1 - n)) & ~(~0 << n);
+}
+
+// ~(~0 << n) is zero-bits, filled with 'n' 1-bits from right.
+
+
+(b)
+/*
+i = 1110 1011 1010 1110
+m = 5
+n = 2
+
+1. 0000 1110 1011 1010
+
+2. 0000 0000 0000 0011
+
+3. 0000 0000 0000 0010
+
+this function extracts bits from (m + 1 - n)th (counting from 1) to (m + 1 - n) + n - 1th
+
+another exmaple
+i = 1110 1011 1010 1110
+m = 5
+n = 3
+
+1. 0001 1101 0111 0101
+
+2. 0000 0000 0000 0111
+
+3. 0000 0000 0000 0101
+
+*/
+
+9.
+(a)
+//Version1
+int count_ones(unsigned char ch)
+{
+	unsigned char divisor = 0b10000000;
+	unsigned char counter = 0;
+
+	for (; divisor > 0; divisor >>= 1)
+		if (ch & divisor)
+			counter++;
+
+	return counter;
+}
+
+//Version2
+int count_ones(unsigned char ch)
+{
+	unsigned char counter = 0;
+
+	while (ch > 0) {
+		if (ch & 0b00000001)
+			counter++;
+		ch >>= 1;
+	}
+
+	return counter;
+}
+
+(b)
+int count_ones(unsigned char ch)
+{
+	return (((ch & 0b10000000) >> 7) +
+			((ch & 0b01000000) >> 6) +
+			((ch & 0b00100000) >> 5) +
+			((ch & 0b00010000) >> 4) +
+			((ch & 0b00001000) >> 3) +
+			((ch & 0b00000100) >> 2) +
+			((ch & 0b00000010) >> 1) +
+			 (ch & 0b00000001)     );
+			
+}
+
+10.
+
+#include <stdio.h>
+
+unsigned int reverse_bits(unsigned int n);
+
+int main(void)
+{
+	unsigned int nano = 0x12345678;
+
+	printf("revsered_bit nano : %x\n", reverse_bits(nano));
+
+	return 0;
+}
+
+
+unsigned int reverse_bits(unsigned int n)
+{
+	/* index starts from 0. */
+	unsigned char max_int_bit_idx = (unsigned char) ((8 * sizeof(unsigned int)) - 1);
+
+	/* assuming size of unsigned int to be less or equal than 127. (typically, 32 or 64.)
+	 * and, i must be signed, otherwise 0 - 1 will be -128.
+	 */
+	signed char i;
+
+	unsigned int result = 0;
+
+	for (i = max_int_bit_idx; i >= 0; i--) {
+		if (n & (1 << i))
+			result |= 1 << (max_int_bit_idx - i);
+	}
+
+	return result;
+}
+
+11.
+
+if (key_code & (SHIFT_BIT | CTRL_BIT | ALT_BIT) == 0)
+is
+if (key_code & ALT_BIT == 0).
+is
+if (key & 0) // (== precedes &.)
+is
+if (0).
+so it never meets condition, because of operator precedence.
+
+it can be corrected as :
+if ((key_code & (SHIFT_BIT | CTRL_BIT | ALT_BIT)) == 0)
+
+or..
+if ( !((key_code & (1 << SHIFT_BIT)) || (key_code & (1 << CTRL_BIT)) || (key_code & (1 << ALT_BIT))) )
+
+
+12.
+
+unsigned short create_short(unsigned char high_byte, unsigned char low_byte)
+{
+	return high_byte << 8 + low_byte;
+}
+
+binary operator + precedes bit shift operator, so it sums 8 and low_byte first.
+this can be corrected as :
+
+unsigned short create_short(unsigned char high_byte, unsigned char low_byte)
+{
+	return (high_byte << 8) + low_byte;
+}
+
+13.
+
+n =		0000 1011 1010 1110
+n-1=	0000 1011 1010 1101
+result=	0000 1011 1010 1100
+
+r =		0000 1011 1010 1100
+r-1=	0000 1011 1010 1011
+result= 0000 1011 1010 1000
+
+it clears 1 bit that appears first, beginning from right side.
+
+14.
+
+struct float_type {
+	unsigned int sign : 1;
+	unsigned int exponent : 8;
+	unsigned int fraction : 23;
+}; /* CANNOT BE READ AS FLOAT TYPE (VS 2017) */
+
+in visual studio 2017, bit-field packing result is..
+(bits)			    11010101 10101101 11010111 11110101
+(owner of the bit)  ffffffff ffffffff fffffffe eeeeeees
+it is stored as.. (little-endian)
+(bits)			    11110101 11010111 10101101 11010101
+(owner of the bit)  eeeeeees fffffffe ffffffff ffffffff
+
+
+struct float_type {
+	unsigned int fraction : 23;
+	unsigned int exponent : 8;
+	unsigned int sign : 1;
+}; /* CAN BE READ AS FLOAT TYPE (VS 2017) */
+
+in the same environment, bit-field packing result is..
+(bits)			    11010101 10101101 11010111 11110101
+(owner of the bit)  seeeeeee efffffff ffffffff ffffffff
+it is stored as.. (little-endian)
+(bits)			    11110101 11010111 10101101 11010101
+(owner of the bit)  ffffffff ffffffff efffffff seeeeeee
+
+
+another example:
+struct mybitfields  
+{  
+    unsigned short a : 4;  
+    unsigned short b : 5;  
+    unsigned short c : 7;  
+} test;  
+  
+int main( void );  
+{  
+    test.a = 2;  
+    test.b = 31;  
+    test.c = 0;  
+}  
+is stored as...
+(bits)			    00000001 11110010  
+(owner of the bit)  cccccccb bbbbaaaa  
+
+15.
+
+(a)
+because flag has only one bit, its bit can be read as a sign bit, or value bit.
+
+(b)
+variable name 'flag' indicates that it will be used as a condition. so it needs to be 1 or 0.
+declaring 'flag' as unsigned int will solve this problem.
+
+16.
+/* assuming ulong is 32-bit, ushort is 16-bit, and little-endian. */
+/* p stands for 'padders for..' */
+typedef unsigned long DWORD;
+typedef unsigned short WORD;
+typedef unsigned char BYTE;
+union {
+	struct {
+		DWORD EAX;
+		DWORD EBX;
+		DWORD ECX;
+		DWORD EDX;
+	} dword;
+	struct {
+		WORD AXL;
+		WORD AXH;
+		WORD BXL;
+		WORD BXH;
+		WORD CXL;
+		WORD CXH;
+		WORD DXL;
+		WORD DXH;
+	} word;
+	struct {
+		BYTE AXLL;
+		BYTE AXLH;
+		BYTE AXHL;
+		BYTE AXHH;
+		BYTE BXLL;
+		BYTE BXLH;
+		BYTE BXHL;
+		BYTE BXHH;
+		BYTE CXLL;
+		BYTE CXLH;
+		BYTE CXHL;
+		BYTE CXHH;
+		BYTE DXLL;
+		BYTE DXLH;
+		BYTE DXHL;
+		BYTE DXHH;
+	} byte;
+} regs;
