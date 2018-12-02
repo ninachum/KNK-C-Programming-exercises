@@ -1,0 +1,552 @@
+1.
+
+each structure has its own namespace. it's legal.
+
+
+2.
+
+(a)
+struct {
+	double real;
+	double imaginary;
+} c1, c2, c3;
+
+(b)
+struct {
+	double real;
+	double imaginary;
+} c1 = { 0.0, 1.0 },
+  c2 = { 1.0, 0.0 },
+  c3;
+
+(c)
+c1 = c2;
+because c1 and c2 are compatible, an assignment is enough.
+
+(d)
+c3.real = c1.real + c2.real;
+c3.imaginary = c1.imaginary + c2.imaginary;
+
+
+3.
+
+(a)
+struct ninano {
+	double real;
+	double imaginary;
+	};
+
+(b)
+struct ninano c1, c2, c3;
+
+(c)
+/* the structure must have declared as external variables. */
+struct ninano make_complex(double real, double imaginary)
+{
+	struct ninano result;
+
+	result.real = real;
+	result.imaginary = imaginary;
+
+	return result;
+}
+
+(d)
+struct ninano add_complex(struct ninano c1, struct ninano c2)
+{
+	struct ninano result;
+
+	result.real = c1.real + c2.real;
+	result.imaginary = c1.imaginary + c2.imaginary;
+
+	return result;
+}
+
+
+4.
+
+(a)
+typedef struct {
+	double real;
+	double imaginary;
+	} ninano;
+
+(b)
+ninano c1, c2, c3;
+
+(c)
+/* the structure must have declared as external variables. */
+ninano make_complex(double real, double imaginary)
+{
+	ninano result;
+
+	result.real = real;
+	result.imaginary = imaginary;
+
+	return result;
+}
+
+(d)
+ninano add_complex(ninano c1, ninano c2)
+{
+	ninano result;
+
+	result.real = c1.real + c2.real;
+	result.imaginary = c1.imaginary + c2.imaginary;
+
+	return result;
+}
+
+
+5.
+(a)
+#define IS_LEAP_YEAR(struct_name)  ((struct_name##.year % 4 == 0) && (struct_name##.year % 100 != 0)) || (struct_name##.year % 400 == 0)
+
+int day_of_year(struct date target)
+{
+	int month_days[] = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
+	int result = target.day, i;
+
+	if (IS_LEAP_YEAR(target))
+		month_days[1]++;
+
+	for (i = 0; i < target.month - 1; i++)
+		result += month_days[i];
+
+	return result;
+}
+
+(b)
+struct date {
+	int month, day, year;
+};
+
+int compare_dates(struct date d1, struct date d2)
+{
+	if (d1.year < d2.year)
+		return -1;
+	else if (d1.year > d2.year)
+		return 1;
+	else
+		if (d1.month < d2.month)
+			return -1;
+		else if (d1.month > d2.month)
+			return 1;
+		else
+			if (d1.day < d2.day)
+				return -1;
+			else if (d1.day > d2.day)
+				return 1;
+			else
+				return 0;
+}
+
+
+6.
+struct time {
+	int hours, minutes, seconds;
+};
+
+struct time split_time(long total_seconds)
+{
+	struct time result;
+
+	result.hours = total_seconds / 3600;
+	result.minutes = (total_seconds % 3600) / 60;
+	result.seconds = (total_seconds % 3600) % 60;
+
+	return result;
+}
+
+
+7.
+
+#include <stdio.h>
+
+struct fraction {
+	int nume;
+	int denom;
+};
+
+struct fraction reduce_fraction(struct fraction target)
+{
+	int temp, nume = target.nume, denom = target.denom;
+
+	while (denom > 0) {
+		temp = nume % denom;
+		nume = denom;
+		denom = temp;
+	}
+
+	target.nume /= nume, target.denom /= nume;
+
+	return target;
+}
+
+struct fraction add_fraction(struct fraction s1, struct fraction s2)
+{
+	s1.nume *= s2.denom, s2.nume *= s1.denom;
+	s1.nume += s2.nume;
+	s1.denom *= s2.denom;
+	return reduce_fraction(s1);
+}
+
+struct fraction sub_fraction(struct fraction s1, struct fraction s2)
+{
+	s1.nume *= s2.denom, s2.nume *= s1.denom;
+	s1.nume -= s2.nume;
+	s1.denom *= s2.denom;
+	return reduce_fraction(s1);
+}
+
+struct fraction mul_fraction(struct fraction s1, struct fraction s2)
+{
+	s1.nume *= s2.nume, s1.denom *= s2.denom;
+	return reduce_fraction(s1);
+}
+
+struct fraction div_fraction(struct fraction s1, struct fraction s2)
+{
+	s1.nume *= s2.denom, s1.denom *= s2.nume;
+	return reduce_fraction(s1);
+}
+
+void print_fraction(struct fraction s1)
+{
+	printf("%d / %d\n", s1.nume, s1.denom);
+}
+
+int main(void)
+{
+	struct fraction ninano1 = { 5, 3 };
+	struct fraction ninano2 = { 4, 10 };
+
+	print_fraction(add_fraction(ninano1, ninano2));
+	print_fraction(sub_fraction(ninano1, ninano2));
+	print_fraction(mul_fraction(ninano1, ninano2));
+	print_fraction(div_fraction(ninano1, ninano2));
+
+	return 0;
+}
+
+
+8.
+struct color {
+	int read;
+	int green;
+	int blue;
+};
+
+const struct color MAGENTA = { 255, 0, 255 };
+
+const struct color MAGENTA_2 = { 255, .blue = 255 };
+
+
+9.
+#include <stdbool.h>
+
+struct color {
+	int red;
+	int green;
+	int blue;
+};
+
+struct color make_color(int red, int green, int blue)
+{
+	struct color new_color;
+
+	if (red > 255)
+		red = 255;
+	if (green > 255)
+		green = 255;
+	if (blue > 255)
+		blue = 255;
+	if (red < 0)
+		red = 0;
+	if (green < 0)
+		green = 0;
+	if (blue < 0)
+		blue = 0;
+
+	new_color.red = red;
+	new_color.green = green;
+	new_color.blue = blue;
+
+	return new_color;
+}
+
+int getRed(struct color c)
+{
+	return c.red;
+}
+
+bool equal_color(struct color color1, struct color color2)
+{
+	if (color1.red != color2.red)
+		return 0;
+	else if (color1.blue != color2.blue)
+		return 0;
+	else if (color1.green != color2.green)
+		return 0;
+	return 1;
+}
+
+struct color brighter(struct color c)
+{
+
+	if (c.red == 0 && c.green == 0 && c.blue == 0) {
+		c.red = 3, c.green = 3, c.blue = 3;
+		return c;
+	}
+
+	if (0 < c.red && c.red < 3)
+		c.red = 3;
+	if (0 < c.green && c.green < 3)
+		c.green = 3;
+	if (0 < c.blue && c.blue < 3)
+		c.blue = 3;
+
+	c.red /= 0.7;
+	c.green /= 0.7;
+	c.blue /= 0.7;
+
+	if (c.red > 255)   c.red = 255;
+	if (c.green > 255) c.green = 255;
+	if (c.blue > 255)  c.blue = 255;
+
+	return c;
+}
+
+struct color darker(struct color c)
+{
+
+	c.red *= 0.7;
+	c.green *= 0.7;
+	c.blue *= 0.7;
+
+	return c;
+}
+
+10.
+#include <stdbool.h>
+
+struct point {
+	int x, y;
+};
+
+struct rectangle {
+	struct point upper_left, lower_right;
+};
+
+int area_size(struct rectangle rect)
+{
+	return (rect.upper_left.x - rect.lower_right.x)
+			* (rect.upper_left.y - rect.lower_right.y);
+
+}
+
+struct point center(struct rectangle rect)
+{
+	struct point result;
+
+	result.x = (rect.upper_left.x + rect.lower_right.x) / 2;
+	result.y = (rect.upper_left.y + rect.lower_right.y) / 2;
+
+	return result;
+}
+
+struct rectangle move_rect(struct rectangle rect, int x_move, int y_move)
+{
+	rect.upper_left.x += x_move;
+	rect.upper_left.y += y_move;
+	rect.lower_right.x += x_move;
+	rect.lower_right.y += y_move;
+	return rect;
+}
+
+bool is_in(struct rectangle rect, struct point dot)
+{
+	if ((rect.upper_left.x < dot.x) && (dot.x < rect.lower_right.x) &&
+		(rect.lower_right.y < dot.y) && (dot.y < rect.upper_left.y))
+		return 1;
+	return 0;
+}
+
+
+11.
+8 + max(4, 8, 4) + 4 = 20
+
+12.
+max(8, 4 + 8 + 4, 4) = 16
+
+13.
+struct shape {
+	int shape_kind;				/* RECTANGLE or CIRCLE */
+	struct point center;		/* coordinates of center */
+	union {
+		struct {
+			int height, width;
+		} rectangle;
+		struct {
+			int radius;
+		} circle;
+	} u;
+} s;
+
+struct point {
+	int x, y;
+};
+
+/*
+(a) legal (provided that there's macro or enumeration.)
+(b) legal
+(c) illegal, s.u.rectangle.height = 25;
+(d) legal
+(e) illegal, s.u.circle.radius = 5;
+(f) illegal, s.u.circle.radius = 5;
+*/
+
+14.
+struct shape {
+	int shape_kind;				/* RECTANGLE or CIRCLE */
+	struct point center;		/* coordinates of center */
+	union {
+		struct {
+			int height, width;
+		} rectangle;
+		struct {
+			int radius;
+		} circle;
+	} u;
+} s;
+
+struct point {
+	int x, y;
+};
+
+double area_size(struct shape s)
+{
+	if (s.shape_kind == RECTANGLE)
+		return s.u.rectangle.height * s.u.rectangle.width;
+	else if (s.shape_kind == CIRCLE)
+		return s.u.circle.radius * s.u.circle.radius * 3.14;
+}
+
+struct shape move_shape(struct shape s, int x_move, int y_move)
+{
+	s.center.x += x_move, s.center.y += y_move;
+	return s;
+}
+
+struct shape scale_shape(struct shape s, double scale)
+{
+	if (s.shape_kind == RECTANGLE) {
+		s.u.rectangle.height *= scale;
+		s.u.rectangle.width *= scale;
+	}
+	else if (s.shape_kind == CIRCLE)
+		s.u.circle.radius *= scale;
+
+	return s;
+}
+
+15.
+enum week { MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY };
+
+typedef enum { MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY } week_2;
+
+week_2 today = MONDAY;
+
+16.
+T, F(different scope), T, F, T
+
+17.
+enum { FALSE, TRUE } b;
+int i;
+
+/*
+(a) legal, safe
+(b) legal, not safe (can be an integer out of boundary.)
+(c) legal, not safe (can be an integer out of boundary.)
+(d) legal, safe
+(e) legal, safe
+
+
+18.
+
+enum Piece { PAWN, KNIGHT, BISHOP, ROOK, QUEEN, KING, EMPTY };
+enum Color { BLACK, WHITE };
+
+struct Square {
+	enum Piece n_piece;
+	enum Color n_color;
+};
+
+struct Square chess_board[8][8] = {
+
+{ROOK, BLACK}, {KNIGHT, BLACK}, {BISHOP, BLACK}, {KING, BLACK}, {QUEEN, BLACK}, {BISHOP, BLACK}, {KNIGHT, BLACK}, {ROOK,BLACK},
+{PAWN, BLACK}, { PAWN, BLACK }, { PAWN, BLACK },{ PAWN, BLACK },{ PAWN, BLACK },{ PAWN, BLACK },{ PAWN, BLACK },{ PAWN, BLACK },
+{EMPTY, BLACK},{ EMPTY, BLACK },{ EMPTY, BLACK },{ EMPTY, BLACK },{ EMPTY, BLACK },{ EMPTY, BLACK },{ EMPTY, BLACK },{ EMPTY, BLACK },
+{ EMPTY, BLACK },{ EMPTY, BLACK },{ EMPTY, BLACK },{ EMPTY, BLACK },{ EMPTY, BLACK },{ EMPTY, BLACK },{ EMPTY, BLACK },{ EMPTY, BLACK },
+{ EMPTY, BLACK },{ EMPTY, BLACK },{ EMPTY, BLACK },{ EMPTY, BLACK },{ EMPTY, BLACK },{ EMPTY, BLACK },{ EMPTY, BLACK },{ EMPTY, BLACK },
+{ EMPTY, BLACK },{ EMPTY, BLACK },{ EMPTY, BLACK },{ EMPTY, BLACK },{ EMPTY, BLACK },{ EMPTY, BLACK },{ EMPTY, BLACK },{ EMPTY, BLACK },
+{ PAWN, WHITE },{ PAWN, WHITE },{ PAWN, WHITE },{ PAWN, WHITE },{ PAWN, WHITE },{ PAWN, WHITE },{ PAWN, WHITE },{ PAWN, WHITE },
+{ ROOK, WHITE },{ KNIGHT, WHITE },{ BISHOP, WHITE },{ KING, WHITE },{ QUEEN, WHITE },{ BISHOP, WHITE },{ KNIGHT, WHITE },{ ROOK,WHITE },
+
+};
+
+
+19.
+struct pinball_machine {
+	char name[40 + 1];
+	int year;
+	enum { EM, SS } type;
+	int players;
+};
+
+
+20.
+enum { NORTH, SOUTH, EAST, WEST } direction;
+
+switch (direction) {
+	case NORTH:
+		y--;
+		break;
+	case SOUTH:
+		y++;
+		break;
+	case EAST:
+		x++;
+		break;
+	case WEST:
+		x--;
+		break;
+	}
+
+21.
+0, 1, 2, 3
+11, 12, 13
+14, 15, 16, 24, 25
+45, 46, 47, 37, 38, 39
+
+
+22.
+/*
+enum chess_pieces { KING, QUEEN, ROOK, BISHOP, KNIGHT, PAWN };
+
+const int piece_value[] = { 200, 9, 5, 3, 3, 1 };
+*/
+
+enum chess_pieces { KING, QUEEN, ROOK, BISHOP, KNIGHT, PAWN };
+
+const int piece_value[] = {
+	[KING] = 200,
+	[QUEEN] = 9,
+	[ROOK] = 5,
+	[BISHOP] = 3,
+	[KNIGHT] = 3,
+	[PAWN] = 1
+};
+
+
+

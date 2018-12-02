@@ -1,0 +1,404 @@
+1.
+
+(a) correct
+(b) no, "\n" returns pointer, but conversion specifier is %c.
+(c) no, '\n' is a character, not a string (an array of character that ends with '\0')
+(d) correct
+(e) no, printf expects its first argument as char * type, not char type.
+(f) correct
+(g) correct
+(h) no, putchar expects its first argument to be character type, not char * type.
+(i) no, puts expects its first argument to be char * type, not char type.
+(j) legal but not correct, puts() prints an additional new-line character automatically.
+(k) correct
+
+2.
+
+(a) illegal, putchar expects its first argument to be charcter type, not char * type.
+(b) legal, p points to the first letter of "abc". *p contains 'a'.
+(c) legal
+(d) illegal, *p is a character. not a string.
+
+3.
+
+i = 12
+s = abc34
+j = 56
+
+4.
+
+original
+
+/* n is the maximum number of characters to be read.
+ * n characters will be read. addition space for the last character is reserved('\0')
+ * str[] is assumed to have n + 1 spaces.
+ */
+int read_line(char str[], int n)
+{
+	int ch, i = 0;
+
+	while ((ch = getchar()) != '\n') {
+		if (i < n)
+			str[i++] = ch;
+	}
+	str[i] = '\0';
+
+	return i;
+}
+
+
+(a)
+
+#include <ctype.h>
+
+int read_line(char str[], int n)
+{
+	int ch, i = 0;
+
+	while (isspace(ch = getchar()))
+		;
+	while (ch != '\n') {
+		if (i < n)
+			str[i++] = ch;
+		ch = getchar();
+	}
+	str[i] = '\0';
+
+	return i;
+}
+
+
+(b)
+
+#include <ctype.h>
+
+int read_line(char str[], int n)
+{
+	int ch, i = 0;
+
+	while (!isspace(ch = getchar())) {
+		if (i < n)
+			str[i++] = ch;
+	}
+	str[i] = '\0';
+
+	return i;
+}
+
+
+(c)
+
+int read_line(char str[], int n)
+{
+	int ch, i = 0;
+
+	while ((ch = getchar()) != '\n') {
+		if (i < n - 1)
+			str[i++] = ch;
+	}
+	str[i] = ch;
+	str[i + 1] = '\0';
+
+	return i;
+}
+
+OR (below is better)
+
+int read_line(char str[], int n)
+{
+	int ch, i = 0;
+
+	do {
+		ch = getchar();
+		if (i < n)
+			str[i++] = ch;
+	} while (ch != '\n');
+
+	str[i] = '\0';
+
+	return i;
+}
+
+
+(d)
+
+int read_line(char str[], int n)
+{
+	int ch, i = 0;
+
+	while ((ch = getchar()) != '\n') {
+		if (i < n) {
+			str[i++] = ch;
+			if (i >= n)
+				break;
+		}
+	}
+	str[i] = '\0';
+
+	return i;
+}
+
+OR (below is better)
+
+int read_line(char str[], int n)
+{
+	int ch, i = 0;
+
+	for (i = 0; i < n; i++) {
+		if ((ch = getchar()) == '\n')
+			break;
+		str[i] = ch;
+	}
+
+	str[i] = '\0';
+	return i;
+}
+
+5.
+
+(a)
+
+#include <ctype.h>
+
+void capitalize(char target[])
+{
+	int i = 0;
+
+	while (target[i] != '\0') {
+		if ('a' <= target[i] && target[i] <= 'z')
+			target[i] = toupper(target[i]);
+		i++;
+	}
+}
+
+(b)
+
+#include <ctype.h>
+
+void capitalize(char *target)
+{
+	while (*target) {
+		if ('a' <= *target && *target <= 'z')
+			*target = toupper(*target);
+		target++;
+	}
+}
+
+
+6.
+
+#include <stdio.h>
+#include <string.h>
+
+void censor(char *target)
+{
+	while (*target) {
+		if (*target == 'f' && *(target + 1) == 'o' && *(target + 2) == 'o')
+			*target = *(target + 1) = *(target + 2) = 'x';
+		target++;
+	}
+}
+
+int main(void)
+{
+	char str[] = "foo foo lynn";
+
+	censor(str);
+
+	printf("%s\n", str);
+
+	return 0;
+}
+
+
+7.
+
+(d)
+
+
+8.
+
+tired-or-wired?'\0'
+
+9.
+
+string s1 will be : computers'\0'
+
+contents of array s1 will be : computers'\0'ience'\0'
+
+10.
+
+declaring char *q only reserves memory spaces for a pointer value, not an array.
+and, q is local variable, which disappears after function 'duplicate' is executed.
+it can be corrected as :
+
+char *duplicate(const char *p)
+{
+	static char q[LENGTH_GREATER_OR_EQUAL_TO_P];
+
+	strcpy(q, p);
+	return q;
+}
+
+11.
+
+int strcmp(char *s, char *t)
+{
+	while (*s == *t) {
+		if (*s == '\0')
+			return 0;
+		s++, t++;
+	}
+	return *s - *t;
+}
+
+12.
+
+#include <string.h>
+#include <stdio.h>
+
+void get_extension(const char *file_name, char *extension)
+{
+	const char *starting_point = file_name;
+
+	while (*file_name)
+		file_name++;
+
+	/* file_name now indicates a null character */
+
+	file_name--;
+	while (file_name != starting_point) {
+		if (*file_name == '.')
+			break;
+		file_name--;
+	}
+
+	/* file_name now indicates where last '.' appears. */
+
+	if (file_name != starting_point) {
+		file_name++;
+		strcpy(extension, file_name);
+	}
+	else
+		*extension = '\0';
+}
+
+int main(void)
+{
+	char test[] = "tont.dfe.efe";
+	char test2[50];
+
+	get_extension(test, test2);
+	printf("%s\n", test2);
+	
+	return 0;
+
+}
+
+13.
+
+#include <string.h>
+
+void build_index_url(const char *domain, char *index_url)
+{
+
+	strcpy(index_url, "http://www.");
+	strcat(index_url, domain);
+	strcat(index_url, "/index.html");
+
+}
+
+14.
+
+Grinch
+
+15.
+
+(a) 3
+(b) 0
+(c) compare each character of string s to that of string t.
+	if there's no match for a character, return index of first non-matching character in string s.
+
+16.
+
+int count_spaces(const char *s)
+{
+	int count = 0;
+
+	while (*s) 
+		if (*s++ == ' ')
+			count++;
+
+	return count;
+}
+
+17.
+
+#include <string.h>
+#include <ctype.h>
+#include <stdio.h>
+
+#define TRUE 1
+#define FALSE 0
+
+int test_extension(const char *file_name,
+				   const char *extension)
+{
+	const char *searching_point = file_name;
+
+	while(*searching_point)
+		searching_point++;
+
+	/* searching_point now indicates a null character. */
+
+	while(*searching_point != '.'&& searching_point != file_name)
+		searching_point--;
+
+	/* searching_point now indicates '.' that appears last.
+	 * OR, if there's no '.' in the string, it points to the first character of the string. */
+
+	if (searching_point == file_name) {
+		printf("there's no extension in original file.\n");
+		return FALSE;
+	}
+
+	searching_point++;
+
+	if (strlen(searching_point) == strlen(extension)) {
+		while(*searching_point) {
+			if (toupper(*searching_point++) != toupper(*extension++))
+				return FALSE;
+		}
+		return TRUE;
+	}
+	else
+		return FALSE;
+}
+
+int main(void)
+{
+	char *test_1 = "hhithere";
+	char *test_2 = "hithere";
+	int result = test_extension(test_1, test_2);
+
+	printf("%d\n", result);
+
+	return 0;
+}
+
+18.
+
+void remove_filename(char *url)
+{
+	while (*url)
+		url++;
+
+	/* url now points to a null char. */
+
+	while (*url != '/')
+		url--;
+
+	/* url now indicates last '/' in the string. */
+
+	*url = '\0';
+}

@@ -1,0 +1,233 @@
+1.
+
+(a)
+#define cube(x) ((x) * (x) * (x))
+
+(b)
+#define remainder(n) ((n) % 4)
+
+(c)
+#if smaller_than_100(x, y) ((((x) * (y)) < 100)? 1: 0)
+
+/***********************test***********************/
+#include <stdio.h>
+
+#define cube(x) ((x) * (x) * (x))
+#define remainder(n) ((n) % 4)
+#define smaller_than_100(x, y) ((((x) * (y)) < 100)? 1: 0)
+
+int main(void)
+{
+	int x, y, n;
+
+	x = 1, y = 5, n = 100;
+
+	printf("%d\n", cube(x));
+	printf("%d\n", remainder(y));
+	printf("%d\n", smaller_than_100(0, smaller_than_100(y, x)));
+
+	return 0;
+}
+
+/***************************************************/
+
+
+2.
+
+#define NELEMS(a) ((int) sizeof(a) / sizeof(a[0]))
+
+3.
+
+(a)
+2 * 1 + 2 = 4
+
+(b)
+4 / 2 * 2 = 4
+
+(c)
+#define DOUBLE(x) (2 * (x))
+
+4.
+
+(a)
+1 / AVG(2, 3) is supposed to be 1 / 2.5, but it evaluates 1 / 5 / 2, which is 1 / 10.
+#define AVG(x, y) (((x) + (y)) / 2)
+
+(b)
+40000 / AREA(2, 3) is supposed to be 40000 / (6), but it evaluates 40000 / 2 * 3.
+#define AREA(x, y) ((x) * (y))
+
+5.
+(++i is called several times!)
+(a)
+D
+
+(b)
+2
+
+6.
+
+(a)
+#define DISP(f, x) printf(#f "(%g) = %g\n", x, f(x));
+DISP (sqrt, 2.0);
+
+(b)
+#define DISP(f, x, y) printf(#f "(%d, %d) = %g\n", x, y, f(x, y));
+DISP(pow, 3, 4);
+
+
+7.
+
+(a)
+long long_max(long x, long y)
+{
+	return x > y ? x : y;
+}
+
+(b)
+for unsigned long type, it is...
+unsigned long unsigned long_max(unsigned long x, unsigned long y)
+{
+	return x > y ? x : y;
+}
+' ' is not legal for function name.
+
+(c)
+typedef unsigned long ULONG;
+GENERIC_MAX(ULONG)
+
+8.
+????
+
+9.
+
+#define CHECK(x, y, n) (((x) >= 0 && (x) <= ((n) - 1) && (y) >= 0 && (y) <= ((n) - 1)))
+#define MEDIAN(x, y, z) ( ((x) > (y) ? (((y) > (z)) ? (y) : (((x) > (z)) ? (z) : (x))) : (((x) > (z)) ? (x) : (((y) > (z)) ? (z) : (y)))) )
+#define POLYNOMIAL(x) ( (3*((x)*(x)*(x)*(x)*(x))+2((x)*(x)*(x)*(x))-5((x)*(x)*(x))-((x)*(x))+7(x)-6) )
+
+10.
+(323p)
+- A macro may evaluate its arguments more than once, while function not.
+- It's not possible to have a pointer to a macro. (cf. pointer to function)
+
+11.
+(C99)
+#define ERROR(...) fprintf(stderr, __VA_ARGS__)
+
+#define ERROR(x, y) fprintf(stderr, x, y)
+
+12.
+(c), (e)
+
+13.
+
+/******** STARTS HERE *********/
+ 
+
+ 
+
+void f(void);
+
+int main(void)
+{
+	f();
+
+
+
+	return 0;
+}
+
+void f(void)
+{
+ 
+	printf("N is undefined\n");
+}
+/********* ENDS HERE *********/
+
+output is - "N is 100\n"
+
+
+14.
+
+/* original */
+
+#define N = 10
+#define INC(x) x+1
+#define SUB(x,y) x-y
+#define SQR(x) ((x)*(x))
+#define CUBE(x) (SQR(x)*(x))
+#define M1(x,y) x##y
+#define M2(x,y) #x #y
+
+int main(void)
+{
+	int a[N], i, j, k, m;
+
+#ifdef N
+	i = j;
+#else
+	j = i;
+#endif
+
+	i = 10 * INC(j);
+	i = SUB(j, k);
+	i = SQR(SQR(j));
+	i = CUBE(j);
+	i = M1(j, k);
+	puts(M2(i, j));
+
+#undef SQR
+	i = SQR(j);
+#define SQR
+	i = SQR(j);
+
+	return 0;
+}
+
+
+
+/* after preprocessing */
+
+ 
+#include <stdio.h>
+int main(void)
+{
+	int a[= 10], i, j, k, m;
+
+	i = j;					/* undefined behavior, j is not initialized! */
+
+	i = 10 * j+1;			/* undefined bahavior, j is not initialized! meant 10 * (j + 1)? */
+	i = j-k;				/* COMPILATION ERROR! j and k are not initialized. */
+	i = ((SQR(j))*(SQR(j)));/* COMPILATION ERROR! after initial expansion : ((SQR(j)*(SQR(j)), SQR() is expanded once, so it won'be expanded more */
+	i = (((j)*(j))*(j));
+	i = jk;					/* COMPILATION ERROR! M1(j, k) is jk, 'jk' doesn't exist. */
+	puts("x_contents" "y_contents");
+
+#undef SQR
+	i = SQR(j); /* COMPILATION ERROR! not defined */
+#define SQR		/* SQR is 0. */
+	i = SQR(j); /* COMPILATION ERROR! i = 0(j), what? */
+
+	return 0;
+}
+
+
+15.
+
+#if defined(ENGLISH)
+printf("Insert Disk 1\n");
+#elif defined(FRENCH)
+printf("Inserez Le Disque 1\n");
+#elif defined(SPANISH)
+printf("Inserte El Disco 1\n");
+#else
+#error No language specified.
+#endif
+
+
+16.
+
+IDNET(foo)
+=> PRAGMA(ident "foo")
+=> _Pragma("ident \"foo\"")
+=> #pragma ident "foo"
