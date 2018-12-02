@@ -1,0 +1,143 @@
+1.
+
+too many of them, check C:\Program Files (x86)\Microsoft Visual Studio
+
+2.
+
+in <stdio.h>..
+#define putchar(_c)       putc((_c),stdout)
+...
+_Check_return_opt_ _CRTIMP int __cdecl putchar(_In_ int _Ch);
+
+this putchar() macro hides putchar() function.
+
+
+3.
+<source : https://github.com/williamgherman/c-solutions/tree/master/21/exercises/03 >
+For the macro (i.e. the preprocessor) to be aware of the function it is hiding, the function prototype must come before the macro definition.
+
+4.
+
+skipped
+
+5.
+<source : https://github.com/fordea/c-programming-a-modern-approach/blob/master/ch21/Exercises/04.txt >
+
+Reserved identifiers:
+All of these reservations are made regardless of what headers are included
+within a program.
+
+complex.h
+
+    Function names:
+    cerf
+    cerfc
+    cexp2
+    cexpm1
+    clog10
+    clog1p
+    clog2
+    clgamma
+    ctgamma
+
+    And the same names suffixed with f or l.
+
+ctype.h
+
+    Function names:
+    Any names that begin with is or to, and a lowercase letter may be added
+    to the declarations in the ctype.h header.
+
+errno.h
+    Macro names:
+    Names that begin with E and a digit, or E and an uppercase letter.
+
+inttypes.h
+    Macro names:
+    Names that begin with PRI or SCN followed by any lowercase letter.
+    X may be added to any macros defined in the inttypes.h header.
+
+locale.h
+    Macro names:
+    Names that begin with LC_ and an uppercase letter.
+
+signal.h
+    Macro names:
+    Names that begin with either SIG and an uppercase letter or SIG_ and an
+    uppercase letter.
+
+stdint.h
+    Typedef names:
+    Names beginning with int or unit and ending with _t.
+
+    Macro names:
+    Names begging with INT or UINT and ending with _MAX, _MIN, or _C.
+
+stdio.h
+    Lowercase letters may be added to the conversion specifiers and length
+    modifiers in fprintf and fscanf. Other characters may be used in extensions.
+
+stdlib.h
+    Function names:
+    Names that begin with str and a lowercase letter.
+
+string.h
+    Function names:
+    Names that begin with str, mem, or wcs and a lowercase letter.
+
+wchar.h
+    Function names:
+    Names that begin with wcs and a lowecase letter.
+
+    Lowercase letters may be added to the conversion specifiers and length
+    modifiers in fwprintf and fwscanf. Other characters may be used in
+    extensions.
+
+wctype.h
+    Function names:
+    Names that begin with is or to and a lowercase letter.
+
+
+
+5.
+
+(531p)
+"The C standards allows headers to define macros that have the same names as library functions,
+ but protects the programmer by requiring that a true function be available as well. "
+
+
+6.
+
+(a)
+because, in standard library, identifiers that begins with underscore is reserved.
+<ctype.h> is a standard library too. so it uses reserved identifier.
+
+(b)
+_UPPER   is 0b00000001
+_LOWER   is 0b00000010
+_DIGIT   is 0b00000100
+_CONTROL is 0b00001000
+
+_PUNCT   is 0b00010000
+_SPACE   is 0b00100000
+_HEX     is 0b01000000
+_BLANK   is 0b10000000
+
+_ctype will contain bits for characters, indicating each character's property (number, alphabet, ...)
+
+horizontal tab char is white-space and blank. so its corresponding character will contain 0b10100000.
+letter A is an upper-case alphabet, so its corresponding character will contain 0b00000001.
+the ^ character is considered punctuation ( not alphabet or number or space), so its corresponding character will contain 0b00010000.
+
+
+7.
+
+(a) time.h
+(b) ctype.h
+(c) limits.h
+(d) math.h
+(e) limits.h (#define CHAR_BIT      8        /* number of bits in a char */)
+(f) float.h (#define DBL_MANT_DIG    53                      /* # of bits in mantissa */)
+(g) string.h
+(h) stdio.h
+

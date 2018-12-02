@@ -1,0 +1,389 @@
+1.
+
+(a) binary
+(b) text
+(c) text
+(d) binary
+
+
+2.
+
+(a) r+b
+(b) a
+(c) rb
+(c) r // batch file is a text file. open any .bat file with notepad for detail.
+
+3.
+
+the program didn't consider the case that fopen() returns NULL.
+it can be corrected as..
+
+FILE *fp;
+
+if ((fp = fopen(filename, "r")) == NULL) {
+	//terminate...
+}
+
+//read characters until end-of-file...
+
+fclose(fp);
+
+
+4.
+
+# and 0 - flags
+12 - minimum width
+.5 - precision
+g - conversion specifier
+
+(a)
+83.7361 is converted to f (exponent is 1)
+00000083.736
+
+(b)
+29748.6607 is converted to f (exponent is 4)
+00000029749.
+
+(c)
+1054932234.0 is converted to e(exponent is 9, which is equal or greater than precision)
+001.0549e+09
+
+(d)
+0.0000235218 is converted to e(exponent is -5, which is less than -4.)
+002.3522e-05
+
+
+5.
+
+		input 1		input 1000		input 10000
+%.4d :	  0001			1000			10000
+%04d :	  0001			1000			10000
+
+%.4d prints a decimal integer, in which its minumum digits are 4
+(leading zeroes are added if the number has fewer digits.)
+
+%04d prints a decimal integer, in which its minimum field width is 4
+(leading zeroes are padded up to the field width, if the number has fewer digits than minimum field.)
+
+conclusion : there's no difference.
+
+
+6.
+
+V1
+printf("%d widget%c\n", widget, (widget > 1) ? 's' : ' ');  // '' isn't possible, compile error occurs. (empty char constant.)
+
+V2
+printf("%d widget%c\n", widget, (widget > 1) ? "s" : "");   // "" is possible, (only a null char)
+
+
+7.
+
+(a)
+input     10_20_30_
+consumed? YYYYYYYYN
+
+i = 10
+x = 20.0
+j = 30
+n = 3
+
+(b)
+input     1.0_2.0_3.0_
+consumed? YYYYYNNNNNNN
+i = 1
+x = 0.0
+j = 2
+n = 3
+
+(c)
+input     0.1_0.2_0.3_
+consumed? YYYYYNNNNNNN
+i = 0
+x = 0.1
+j = 0
+n = 3
+
+(d)
+input     .1_.2_.3_
+consumed? NNNNNNNNN
+i = unchanged
+x = unchanged
+j = unchanged
+n = 0
+
+
+8.
+
+" %c" : skips white-spaces, then read a character and store it. (no null character appended.)
+
+"%1s" : skips white-spaces, then read a character and store it. (null character appended automatically.)
+
+
+9.
+
+(a). getch() is non-buffered character I/O function. unlike getc() family in the textbook, input is not displayed in the screen.
+if you push p key, it instantly obtain the input, and the program proceed to next line.
+
+
+10.
+
+/* Copies a file */
+
+#include <stdio.h>
+#include <stdlib.h>
+
+int main(int argc, char *argv[])
+{
+	FILE *source_fp, *dest_fp;
+	int ch;
+
+	if (argc != 3) {
+		fprintf(stderr, "usage: fcopy source dest\n");
+		exit(EXIT_FAILURE);
+	}
+
+	if ((source_fp = fopen(argv[1], "rb")) == NULL) {
+		fprintf(stderr, "Can't open %s\n", argv[1]);
+		exit(EXIT_FAILURE);
+	}
+
+	if ((dest_fp = fopen(argv[2], "wb")) == NULL) {
+		fprintf(stderr, "Can't open %s\n", argv[2]);
+		fclose(source_fp);
+		exit(EXIT_FAILURE);
+	}
+
+	while ((ch = getc(source_fp)) != EOF)
+		/* write, while checking writing error. */
+		if (putc(ch, dest_fp) == EOF) {
+				fclose(source_fp);
+				fclose(dest_fp);
+				fprintf(stderr, "Error during writing to %s.\n", argv[2]);
+				exit(EXIT_FAILURE);
+			}
+
+	/* check whether there was a read error */
+	if (ferror(source_fp)) {
+				fclose(source_fp);
+				fclose(dest_fp);
+				fprintf(stderr, "Error during reading %s.\n", argv[1]);
+				exit(EXIT_FAILURE);
+	}
+
+	fclose(source_fp);
+	fclose(dest_fp);
+	return 0;
+}
+
+11.
+
+while (ch = getc(source_fp) != EOF)
+	putc(ch, dest_fp);
+
+!= precedes =. so... 
+
+when getc() reads a character from stream source_fp, it will return a character or EOF.
+
+if a character is returned, it is tested whether it isn't equal to EOF, which is typically (-1).
+then, ch is assigned 1 or 0 in this case.
+
+if EOF is returned, it is tested whether it isn't equal to EOF, and it is false(0).
+then, ch is assigned 0 in this case.
+
+conclusion : ch is 1 or 0. (not '1', '0') and this is not intended in fcopy.c program.
+
+
+12.
+
+its errors are.. :
+
+int count_periods(const char *filename)
+{
+	FILE *fp;
+	int n = 0;
+
+	if ((fp = fopen(filename, "r")) != NULL) {
+		while (fgetc(fp) != EOF)
+			if (fgetc(fp) == '.')	// reading fgetc() twice to test a character is EOF or '.' , need a temporary variable.
+				n++;
+		fclose(fp);
+	}
+				// what if fopen() returns NULL ?
+	return n;
+}
+
+it can be corrected as.. :
+
+int count_periods(const char *filename)
+{
+	FILE *fp;
+	int n = 0;
+	int temp;
+
+	if ((fp = fopen(filename, "r")) == NULL) {
+		printf("Error : can't open %s\n", filename);
+		exit(EXIT_FAILURE);
+	}
+
+	while ((temp = fgetc(fp)) != EOF)
+			if (temp == '.')
+				n++;
+	
+	if (ferror(fp)) {
+		printf("Error : read error, %s\n", filename);
+		fclose(fp);
+		exit(EXIT_FAILURE);
+	}
+
+	fclose(fp);
+	return n;
+}
+
+
+13.
+#include <stdio.h>
+
+int main(void)
+{
+	int a = line_length("C:/Users/Kim Hyun Min/source/repos/practice/Debug/output.txt", 6);
+
+	printf("%d\n", a);
+
+	return 0;
+}
+
+int line_length(const char *filename, int n)
+{
+	FILE *fp = fopen(filename, "r");
+	int line_counter = 1, temp;
+	int result = 0;
+
+	if (fp == NULL) {
+		printf("Couldn't open %s\n", filename);
+		return -1;
+	}
+
+	/* find desired line. */
+	while (line_counter != n) {
+		if ((temp = getc(fp)) == '\n') // temp is used as character storage.
+			line_counter++;
+		else if (temp == EOF)
+			return 0;
+	}
+
+	/* once reached the start of desired line, begin counting, stop when meet '\n' or EOF.
+	*  '\n', which is at the end of this line is counted.
+	*/
+	while ((temp = getc(fp)) != EOF) {
+		if (temp == '\n')
+			break;
+		result++;
+	}
+
+	return result;
+}
+
+
+14.
+
+<<<a>>>
+
+#include <stdio.h>
+#include <stdlib.h>
+
+char *my_fgets(char *s, int n, FILE *stream);
+
+int main(void)
+{
+	char nano[5];
+
+	my_fgets(nano, sizeof(nano), stdin);
+
+	printf("result : %s\n", nano);
+
+	return 0;
+
+}
+
+char *my_fgets(char *s, int n, FILE *stream)
+{
+	int temp;
+	int str_idx = 0;
+
+	while ((temp = getc(stream)) != EOF) {
+		if (str_idx >= n - 1)
+			break;
+
+		s[str_idx++] = temp;
+		if (temp == '\n')
+			break;
+	}
+
+	if (ferror(stream))
+		return NULL;
+
+
+	s[str_idx] = '\0';
+
+	return s;
+}
+
+<<<b>>>
+
+int my_fputs(const char *s, FILE *stream)
+{
+	for (; *s != '\0' && *s != EOF; s++) {
+		putc(*s, stream);
+	}
+
+	if (ferror(stream))
+		return EOF;
+
+	return 1;
+
+}
+
+
+15.
+
+#include <stdio.h>
+
+int main(void)
+{
+	FILE *fp = fopen("file_name", "rb"); // file_name is to be determined.
+	int n = 0;
+
+
+	fseek(fp, 64 * n, SEEK_SET); //
+	fseek(fp, -64, SEEK_END);
+	fseek(fp, 64, SEEK_CUR);
+	fseek(fp, -64 * 2, SEEK_CUR);
+
+	fclose(fp);
+	return 0;
+}
+
+
+
+16.
+
+#include <stdio.h>
+
+int main(void)
+{
+	int n = 0;
+	/* in str, there must be only #, followed by sales rank. */
+	char str[100] = "aweofhiO*$U@DJKLWDJ$(%()#99,134,276ffjiof39";
+	char sales_rank[20];
+
+	sscanf(str, "%*[^#] # %[1234567890,]", sales_rank);
+
+	printf("%s\n", sales_rank);
+
+	return 0;
+}
+
+
+
+
